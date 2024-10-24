@@ -1,3 +1,4 @@
-com\makarov\rest_api_stub\ApiController.class
+com\makarov\rest_api_stub\Controllers\GlobalExceptionHandler.class
+com\makarov\rest_api_stub\Modules\User.class
+com\makarov\rest_api_stub\Controllers\ApiController.class
 com\makarov\rest_api_stub\Rest_Api_Stub_Application.class
-com\makarov\rest_api_stub\UserCredentials.class
