@@ -4,8 +4,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
 
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,10 +28,20 @@ import java.util.Map;
 
 public class GlobalExceptionHandler {
     @ExceptionHandler(IllegalArgumentException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseEntity<Map<String, String>> handleException(Exception ex) {
+      public ResponseEntity<Map<String, String>> handleException(Exception ex) {
         Map<String, String> errors = new HashMap<>();
         errors.put("error", ex.getMessage());
         return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
     }
+    @ExceptionHandler(ApiController.UserNotFoundException.class)
+    public ResponseEntity<Map<String, String>> handleUserNotFoundException(ApiController.UserNotFoundException ex) {
+        Map<String, String> errors = new HashMap<>();
+        errors.put("error", ex.getMessage());
+        return new ResponseEntity<>(errors, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+    @ExceptionHandler(SQLException.class)
+    public ResponseEntity<String> handleSQLException(SQLException e) {
+        return new ResponseEntity<>("Database error: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
 }
