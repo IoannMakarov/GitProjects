@@ -39,6 +39,17 @@
   </dependencyManagement>
 
   <dependencies>
+      <!-- Actuator for health checks, metrics, etc. -->
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-actuator</artifactId>
+      </dependency>
+
+      <!-- Micrometer registry for Prometheus -->
+      <dependency>
+        <groupId>io.micrometer</groupId>
+        <artifactId>micrometer-registry-prometheus</artifactId>
+      </dependency>
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-api</artifactId>
