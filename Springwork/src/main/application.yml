@@ -1,0 +1,11 @@
+server:
+  port: 8081  # Настройка порта для вашего Spring Boot приложения
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    prometheus:
+      enabled: true  # Включает эндпоинт Prometheus
