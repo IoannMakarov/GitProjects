@@ -4,11 +4,21 @@ import java.sql.*;
 
 public class JDBCApp {
 
+    public JDBCApp() {
+
+    }
+    public int updateUserRecord(User user) throws SQLException {
+        return updateByUser(user);
+    }
+
+    public User fetchUserByLogin(String login) throws SQLException {
+        return getUserByLogin(login);
+    }
         private static final String url = "jdbc:postgresql://192.168.0.146:5432/mydatabase";
         private static final String loginDB = "myuser";
         private static final String passwordDB = "mypassword";
 
-    public User getUserByLogin(String login) throws SQLException {
+    private User getUserByLogin(String login) throws SQLException {
         Connection conn=null;
         User user_get = null;
         String query = "SELECT t1.login, t1.password,t1.date,t2.email " +
@@ -33,34 +43,25 @@ public class JDBCApp {
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            if (rs != null) {
+            e.printStackTrace(); }
+      finally {
                 try {
-                    rs.close();
+                    if (rs != null) {
+                        rs.close();
+                    }
+                    if (stmt != null) {
+                        stmt.close();
+                    }
+                    if (conn != null) {
+                        conn.close();
+                    }
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
             }
-            if (stmt != null) {
-                try {
-                    stmt.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (conn != null) {
-                try {
-                    conn.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-
         return user_get;
     }
-    public int updateByUser(User user) throws SQLException {
+    private int updateByUser(User user) throws SQLException {
         int count = 1;
         String query = "INSERT INTO table_one (login, password, date) VALUES (?,?,?); \n INSERT INTO table_two (login, email) VALUES (?,?);";
            try (Connection conn = DriverManager.getConnection(url, loginDB, passwordDB);

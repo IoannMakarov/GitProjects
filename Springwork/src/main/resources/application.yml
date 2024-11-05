@@ -1,5 +1,5 @@
 server:
-  port: 8081  # Настройка порта для вашего Spring Boot приложения
+  port: 8080  # Настройка порта для вашего Spring Boot приложения
 
 management:
   endpoints:

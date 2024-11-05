@@ -17,6 +17,13 @@ public class User {
     private Timestamp date;
 
     public User () {}
+
+    public User(String login, String password, String email) {
+        this.login = login;
+        this.password = password;
+        this.email = email;
+    }
+
     public User(String login, String password, String email, Timestamp date) {
         this.login = login;
         this.password = password;

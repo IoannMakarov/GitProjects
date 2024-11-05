@@ -23,8 +23,8 @@ public class ApiController {
         Thread.sleep(ThreadLocalRandom.current().nextInt(1000, 2000));
 
         // Вызов метода getUserByLogin с переданным параметром login
-        JDBCApp jdbc_get = new JDBCApp();
-        User us_get = jdbc_get.getUserByLogin(login);
+        JDBCApp jdbc = new JDBCApp();
+        User us_get = jdbc.fetchUserByLogin(login);
         if (us_get == null) {
             // Если пользователь не найден
             throw new UserNotFoundException("User not found");
@@ -40,31 +40,34 @@ public class ApiController {
     }
     @PostMapping("/post")
     //аннотация Spring, которая указывает, что метод postMethod будет обрабатывать POST-запросы по пути /post
-    public ResponseEntity<Map<String, String>> postMethod(@RequestBody Map<String, String> parameters) throws InterruptedException, SQLException {
+    public ResponseEntity<String> postMethod(@RequestBody Map<String, String> parameters) throws InterruptedException, SQLException {
         // JSON-данные из тела POST-запроса преобразуются в объект класса User с помощью аннотации @RequestBody и библиотеки Jackson.
         // Имитация задержки
         Thread.sleep(ThreadLocalRandom.current().nextInt(1000, 2000));
         // Проверка наличия ровно двух полей login и password
-        if (parameters.size() != 4 ||
+        if (parameters.size() != 3 ||
                 !parameters.containsKey("login") ||
                 !parameters.containsKey("password") ||
-                !parameters.containsKey("email") ||
-                !parameters.containsKey("date"))
+                !parameters.containsKey("email") )
         throw new IllegalArgumentException("Invalid data format");
 
-        if (parameters.get("login") == "" || parameters.get("password") == ""|| parameters.get("email") == ""|| parameters.get("date") == "") {
+        if (parameters.get("login") == "" || parameters.get("password") == ""|| parameters.get("email") == "") {
             throw new IllegalArgumentException("Fields must not be empty");
         }
-        User user_post = new User(parameters.get("login"), parameters.get("password"),parameters.get("email"), Timestamp.valueOf(parameters.get("date")));
-        JDBCApp jdbc_post = new JDBCApp();
-        int update_count = jdbc_post.updateByUser(user_post);
-
+        long randomMillisSinceEpoch = ThreadLocalRandom.current().nextLong(Timestamp.valueOf("2023-01-01 00:00:00").getTime(), Timestamp.valueOf("2023-12-31 23:59:59").getTime());
+        Timestamp randomTimestamp = new Timestamp(randomMillisSinceEpoch);
+        User user = new User(parameters.get("login"), parameters.get("password"),parameters.get("email"),randomTimestamp);
+        JDBCApp jdbc = new JDBCApp();
+        int updateCount = jdbc.updateUserRecord(user);
         Map<String, String> Excepmap = new LinkedHashMap<>();
-        Excepmap.put("login", user_post.getLogin());
-        Excepmap.put("password", user_post.getPassword());
-        Excepmap.put("email", user_post.getEmail());
-        Excepmap.put("date", user_post.getDate().toString());
+        Excepmap.put("login", user.getLogin());
+        Excepmap.put("password", user.getPassword());
+        Excepmap.put("email", user.getEmail());
+        Excepmap.put("date",randomTimestamp.toString());
 
-        return new ResponseEntity<>(Excepmap, HttpStatus.OK);
+        String resultMessage = "Количество обновленных строк: " + updateCount;
+        System.out.println(resultMessage);
+
+        return new ResponseEntity<>(resultMessage, HttpStatus.OK);
     }
 }
